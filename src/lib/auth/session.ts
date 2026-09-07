@@ -13,7 +13,7 @@ export const SESSION_COOKIE_NAME = "symposium_session";
 const SESSION_TTL_SECONDS = 60 * 60 * 12; // 12 hours
 
 function getSecretKey(): Uint8Array {
-  const secret = process.env.SESSION_SECRET;
+  const secret = process.env.SESSION_SECRET?.replace(/^["']|["']$/g, "").trim();
   if (!secret) {
     throw new Error("SESSION_SECRET is not configured on the server");
   }

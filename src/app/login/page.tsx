@@ -24,7 +24,7 @@ function LoginForm() {
       });
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error ?? "Login failed.");
+        setError(data.details ? `${data.error} (${data.details})` : (data.error ?? "Login failed."));
         setLoading(false);
         return;
       }

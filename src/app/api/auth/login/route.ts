@@ -28,7 +28,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Invalid email or password." }, { status: 401 });
     }
 
-    const passwordOk = await verifyPassword(parsed.data.password, user.passwordHash);
+    const passwordOk =
+      (await verifyPassword(parsed.data.password, user.passwordHash)) ||
+      (await verifyPassword(parsed.data.password.trim(), user.passwordHash));
     if (!passwordOk) {
       return NextResponse.json({ error: "Invalid email or password." }, { status: 401 });
     }
@@ -58,6 +60,7 @@ export async function POST(request: NextRequest) {
     return response;
   } catch (error) {
     console.error("[login error]", error);
-    return NextResponse.json({ error: "Login failed. Please try again." }, { status: 500 });
+    const details = error instanceof Error ? error.message : String(error);
+    return NextResponse.json({ error: "Login failed. Please try again.", details }, { status: 500 });
   }
 }
